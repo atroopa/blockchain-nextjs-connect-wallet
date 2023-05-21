@@ -10,6 +10,9 @@ const Home = () => {
   const [connect, setConnect]               = useState(false);
   const [balance , setBalance]              = useState('');
 
+  const failMessage    = "Please install MetaMask and connect !";
+  const successMessage = "Your Account Successfully Connected to Metamask";
+
   return (
     <div>
       <h1>Home</h1>
