@@ -13,6 +13,11 @@ const Home = () => {
   const failMessage    = "Please install MetaMask and connect !";
   const successMessage = "Your Account Successfully Connected to Metamask";
 
+  const INFURA_ID = "f67125134e064cf094e2495c49323c68";
+  const provider = new ethers.providers.JsonRpcProvider(`https://mainnet.infura.io/v3/${INFURA_ID}`);
+
+  
+
   return (
     <div>
       <h1>Home</h1>
