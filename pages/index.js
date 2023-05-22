@@ -3,8 +3,7 @@ import web3Modal from 'web3modal';
 import {ethers} from 'ethers';
 import imageEth from '../ether.png';
 import creator from '../creator.png';
-import {getTrustWalletInjectedProvider} from './trust';
-
+import {getTrustWalletInjectedProvider} from './trust'
 
 const Home = () => {
 
@@ -15,33 +14,41 @@ const Home = () => {
   const failMessage    = "Please install MetaMask and connect !";
   const successMessage = "Your Account Successfully Connected to Metamask";
 
-
-
-
+  const INFURA_ID = "f67125134e064cf094e2495c49323c68";
+  const provider = new ethers.providers.JsonRpcProvider(`https://bsc-dataseed.binance.org`);
 
   const checkIfWalletConnected =  async () => {
-    //if (! window.trustwallet) return;
+    if (! window.trustwallet) return;
 
-    //const accounts = await window.trustWallet.request({method: "eth_accounts"});
-    //console.log(accounts);
     const injectedProvider = await getTrustWalletInjectedProvider();
-    const provider = new ethers.providers.Web3Provider(injectedProvider);
-    // const account = "0x5352ca03fECfeC0BAdb7918E9933cb9c0f70E662";
-    // const accountBalance = await provider.getBalance(account);
-    const signer   =  provider.getSigner()
-    console.log( signer.getAddress());
-    //console.log( ethers.utils.formatEther(accountBalance), " ETH")
 
-  //   if(accounts.length){
-  //     setCurrentAccount(accounts[0]);
-  //     console.log(accounts[0]);
-  //   } else {
-  //     console.log(failMessage);
-  //   }
+    try {
 
-  //   const address = "0x4Ba71c78d6556b0b25D7738b7fD8a518C7489A44";
-  //   const balance = await provider.getBalance(address);
-  //   console.log(ethers.utils.formatEther(balance) , " ETH");
+      const accounts = await injectedProvider.request({
+        method: "eth_requestAccounts",
+      });
+      
+
+        if(accounts.length){
+          setCurrentAccount(accounts[0]);
+          console.log(accounts[0]);
+        }else {
+          console.log(failMessage);
+        }
+
+        const balance = await provider.getBalance(accounts[0]);
+        setBalance(ethers.utils.formatEther(balance) , " bnb");
+
+    } catch (e) {
+      if (e.code === 4001) {
+        console.error("User denied connection.");
+      }
+    }
+
+
+
+    // const address = "0x5352ca03fECfeC0BAdb7918E9933cb9c0f70E662";
+
   }
 
   checkIfWalletConnected();
@@ -49,6 +56,8 @@ const Home = () => {
   return (
     <div>
       <h1>Home</h1>
+      <div>Address : {currentAccount}</div>
+      <div>Balance : {balance} BNB</div>
     </div>
   );
 };
