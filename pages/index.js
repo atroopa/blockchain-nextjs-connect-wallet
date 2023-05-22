@@ -4,14 +4,15 @@ import {ethers} from 'ethers';
 import imageEth from '../ether.png';
 import creator from '../creator.png';
 import {getTrustWalletInjectedProvider} from './trust'
+import Image from "next/image";
 
 const Home = () => {
 
-  const [currentAccount, setCurrentAccount] = useState('');
+  const [currentAccount, setCurrentAccount] = useState("");
   const [connect, setConnect]               = useState(false);
   const [balance , setBalance]              = useState('');
 
-  const failMessage    = "Please install MetaMask and connect !";
+  const failMessage    = "Please install TrustWallet and connect !";
   const successMessage = "Your Account Successfully Connected to Metamask";
 
   const INFURA_ID = "f67125134e064cf094e2495c49323c68";
@@ -30,34 +31,79 @@ const Home = () => {
       
 
         if(accounts.length){
-          setCurrentAccount(accounts[0]);
           console.log(accounts[0]);
         }else {
           console.log(failMessage);
         }
 
         const balance = await provider.getBalance(accounts[0]);
-        setBalance(ethers.utils.formatEther(balance) , " bnb");
+        setBalance(ethers.utils.formatEther(balance));
 
     } catch (e) {
       if (e.code === 4001) {
         console.error("User denied connection.");
       }
     }
+  }
 
+  const cWallet = async () => {
+    //if(!window.ethereum) return console.log(failMessage);
 
+    const injectedProvider = await getTrustWalletInjectedProvider();
+    const accounts = await injectedProvider.request({
+      method: "eth_requestAccounts",
+    });
 
-    // const address = "0x5352ca03fECfeC0BAdb7918E9933cb9c0f70E662";
+    setCurrentAccount(accounts[0]);
+    //window.location.reload();
 
   }
 
-  checkIfWalletConnected();
+  useEffect(() => {
+    checkIfWalletConnected();
+  });
 
   return (
     <div>
-      <h1>Home</h1>
-      <div>Address : {currentAccount}</div>
-      <div>Balance : {balance} BNB</div>
+      {!currentAccount ? "" : <span>PRO</span>}
+      <Image src={creator} alt="profile" width={80} height={80}/>
+      <h3>check ether</h3>
+
+      {! currentAccount ? (
+        <div>
+          <div>
+            <p>{failMessage}</p>
+          </div>
+        <Image src={imageEth} alt="ether" width={100} height={100} />
+        <p>Welcome to BNB Acount Balance Checker</p>
+        </div>
+      ):(
+        <div>
+          <h6>Verified <span className="tick">&#10004;</span></h6>
+          <p>
+            BNB account and balance Checker <br/> find account details 
+          </p>
+          <div>
+            <button onClick={() => {}}>BNB acount details</button>
+          </div>
+        </div>
+      )}
+
+        {!currentAccount && !connect ? (
+          <div>
+            <button onClick={() => cWallet()} >Connect Wallet</button>
+          </div>
+        ) : (
+          <div>
+            <h6>Your BNB</h6>
+            <ul>
+              <li>Account</li>
+              <li>{currentAccount}</li>
+              <li>Balance</li>
+              <li>{balance} BNB</li>
+            </ul>
+          </div>
+        )}
     </div>
   );
 };
