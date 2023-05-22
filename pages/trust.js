@@ -1,110 +1,72 @@
-import React from "react";
-
-// This is the same implementation presented in the previous sections.
-import { getTrustWalletInjectedProvider } from "./trustWallet";
-
-const App = () => {
-  const [initializing, setInitializing] = React.useState(true);
-  const [injectedProvider, setInjectedProvider] = React.useState(null);
-  const [initializationError, setInitializationError] = React.useState("");
-
-  const [connected, setConnected] = React.useState(false);
-  const [selectedAccount, setSelectedAccount] = React.useState("");
-  const [chainId, setChainId] = React.useState("");
-  const [error, setError] = React.useState("");
-
-  React.useEffect(() => {
-    const initializeInjectedProvider = async () => {
-      const trustWallet = await getTrustWalletInjectedProvider();
-
-      if (!trustWallet) {
-        setInitializationError("Trust Wallet is not installed.");
-        setInitializing(false);
-        return;
-      }
-
-      setInjectedProvider(trustWallet);
-      setInitializing(false);
+export async function getTrustWalletInjectedProvider(
+    { timeout } = { timeout: 3000 }
+  ) {
+    const provider = getTrustWalletFromWindow();
+  
+    if (provider) {
+      return provider;
+    }
+  
+    return listenForTrustWalletInitialized({ timeout });
+  }
+  
+  async function listenForTrustWalletInitialized(
+    { timeout } = { timeout: 3000 }
+  ) {
+    return new Promise((resolve) => {
+      const handleInitialization = () => {
+        resolve(getTrustWalletFromWindow());
+      };
+  
+      window.addEventListener("trustwallet#initialized", handleInitialization, {
+        once: true,
+      });
+  
+      setTimeout(() => {
+        window.removeEventListener(
+          "trustwallet#initialized",
+          handleInitialization,
+          { once: true }
+        );
+        resolve(null);
+      }, timeout);
+    });
+  }
+  
+  function getTrustWalletFromWindow() {
+    const isTrustWallet = (ethereum) => {
+      // Identify if Trust Wallet injected provider is present.
+      const trustWallet = !!ethereum.isTrust;
+  
+      return trustWallet;
     };
-
-    initializeInjectedProvider();
-  }, []);
-
-  const connect = async () => {
-    try {
-      setError("");
-
-      const accounts = await injectedProvider.request({
-        method: "eth_requestAccounts",
-      });
-
-      const chainId = await injectedProvider.request({ method: "eth_chainId" });
-
-      setSelectedAccount(accounts[0]);
-      setChainId(chainId);
-      setConnected(true);
-
-      injectedProvider.addListener("chainChanged", setChainId);
-
-      injectedProvider.addListener("accountsChanged", (accounts) => {
-        if (accounts.length === 0) {
-          setConnected(false);
-          setSelectedAccount("");
-          setChainId("");
-        } else {
-          const connectedAccount = accounts[0];
-          setSelectedAccount(connectedAccount);
-        }
-      });
-    } catch (e) {
-      console.error(e);
-      if (e.code === 4001) {
-        setError("User denied connection.");
-      }
+  
+    const injectedProviderExist =
+      typeof window !== "undefined" && typeof window.ethereum !== "undefined";
+  
+    // No injected providers exist.
+    if (!injectedProviderExist) {
+      return null;
     }
-  };
-
-  const switchChain = async () => {
-    try {
-      await injectedProvider.request({
-        method: "wallet_switchEthereumChain",
-        params: [{ chainId: "0x1" }],
-      });
-    } catch (e) {
-      console.error(e);
-      if (e.code === 4001) {
-        setError("User rejected switching chains.");
-      }
+  
+    // Trust Wallet was injected into window.ethereum.
+    if (isTrustWallet(window.ethereum)) {
+      return window.ethereum;
     }
-  };
-
-  if (initializing) {
-    return <p>Waiting for provider...</p>;
+  
+    // Trust Wallet provider might be replaced by another
+    // injected provider, check the providers array.
+    if (window.ethereum?.providers) {
+      // ethereum.providers array is a non-standard way to
+      // preserve multiple injected providers. Eventually, EIP-5749
+      // will become a living standard and we will have to update this.
+      return window.ethereum.providers.find(isTrustWallet) ?? null;
+    }
+  
+    // Trust Wallet injected provider is available in the global scope.
+    // There are cases that some cases injected providers can replace window.ethereum
+    // without updating the ethereum.providers array. To prevent issues where
+    // the TW connector does not recognize the provider when TW extension is installed,
+    // we begin our checks by relying on TW's global object.
+    return window["trustwallet"] ?? null;
   }
-
-  if (initializationError) {
-    return <p style={{ color: "red" }}>{initializationError}</p>;
-  }
-
-  if (connected) {
-    return (
-      <div>
-        <p style={{ color: "red" }}>{error}</p>
-        <p>Selected account: {selectedAccount}</p>
-        <p>Selected chainId: {chainId}</p>
-        {chainId !== "0x1" && (
-          <button onClick={switchChain}>Switch to Ethereum</button>
-        )}
-      </div>
-    );
-  }
-
-  return (
-    <div>
-      <p style={{ color: "red" }}>{error}</p>
-      <button onClick={connect}>Connect</button>
-    </div>
-  );
-};
-
-export default App;
