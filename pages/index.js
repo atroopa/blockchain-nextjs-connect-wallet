@@ -14,8 +14,6 @@ const Home = () => {
 
   const failMessage                         = "Please install TrustWallet and connect !";
   const successMessage                      = "Your Account Successfully Connected to Metamask";
-
-  const INFURA_ID                           = "f67125134e064cf094e2495c49323c68";
   const provider                            = new ethers.providers.JsonRpcProvider(`https://bsc-dataseed.binance.org`);
 
  
@@ -63,7 +61,7 @@ const Home = () => {
   }
 
   useEffect(() => {
-    checkIfWalletConnected();
+    //checkIfWalletConnected();
   });
 
 useEffect(() => {
@@ -76,6 +74,8 @@ useEffect(() => {
 
         if(accounts.length){
           setCurrentAccount(accounts[0]);
+          const balance = await provider.getBalance(accounts[0]);
+          setBalance(ethers.utils.formatEther(balance));
         }else{
           window.ethereum.reload();
         }
