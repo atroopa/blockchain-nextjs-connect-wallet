@@ -1,10 +1,10 @@
-import React, {useState, useEffect} from "react";
-import web3Modal from 'web3modal';
-import {ethers} from 'ethers';
-import imageEth from '../ether.png';
-import creator from '../creator.png';
+import React, {useState, useEffect}     from "react";
 import {getTrustWalletInjectedProvider} from './trust'
-import Image from "next/image";
+import web3Modal from 'web3modal';
+import {ethers}  from 'ethers';
+import imageEth  from '../ether.png';
+import creator   from '../creator.png';
+import Image     from "next/image";
 
 const Home = () => {
 
@@ -12,11 +12,11 @@ const Home = () => {
   const [connect, setConnect]               = useState(false);
   const [balance , setBalance]              = useState('');
 
-  const failMessage    = "Please install TrustWallet and connect !";
-  const successMessage = "Your Account Successfully Connected to Metamask";
+  const failMessage                         = "Please install TrustWallet and connect !";
+  const successMessage                      = "Your Account Successfully Connected to Metamask";
 
-  const INFURA_ID = "f67125134e064cf094e2495c49323c68";
-  const provider = new ethers.providers.JsonRpcProvider(`https://bsc-dataseed.binance.org`);
+  const INFURA_ID                           = "f67125134e064cf094e2495c49323c68";
+  const provider                            = new ethers.providers.JsonRpcProvider(`https://bsc-dataseed.binance.org`);
 
   const checkIfWalletConnected =  async () => {
     if (! window.trustwallet) return;
@@ -47,7 +47,7 @@ const Home = () => {
   }
 
   const cWallet = async () => {
-    //if(!window.ethereum) return console.log(failMessage);
+    if(!window.ethereum) return console.log(failMessage);
 
     const injectedProvider = await getTrustWalletInjectedProvider();
     const accounts = await injectedProvider.request({
@@ -62,6 +62,24 @@ const Home = () => {
   useEffect(() => {
     checkIfWalletConnected();
   });
+
+useEffect(() => {
+    async function accountChanged() {
+      window.ethereum.on('accountsChanged' , async function () {
+        const accounts = await injectedProvider.request({
+          method: "eth_accounts",
+        });
+
+        if(accounts.length){
+          setCurrentAccount(accounts[0]);
+        }else{
+          window.ethereum.reload();
+        }
+
+      });
+    }
+    accountChanged();
+  }, []);
 
   return (
     <div>
@@ -84,14 +102,14 @@ const Home = () => {
             BNB account and balance Checker <br/> find account details 
           </p>
           <div>
-            <button onClick={() => {}}>BNB acount details</button>
+            <button className="bg-blue-100" onClick={() => {}}>BNB acount details</button>
           </div>
         </div>
       )}
 
         {!currentAccount && !connect ? (
           <div>
-            <button onClick={() => cWallet()} >Connect Wallet</button>
+            <button className="bg-red-100" onClick={() => cWallet()} >Connect Wallet</button>
           </div>
         ) : (
           <div>
