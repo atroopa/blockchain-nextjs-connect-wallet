@@ -98,43 +98,43 @@ useEffect(() => {
                       flex-col
                       items-center
                       ">
-      {!currentAccount ? "" : <span>PRO</span>}
+      {!currentAccount ? "" : <span></span> }
       <Image src={creator} alt="profile" width={80} height={80}/>
-      <h3 className="text-2xl">check ether</h3>
+      <h3 className="text-2xl font-bold py-2">check BNB</h3>
 
       {! currentAccount ? (
         <div className=" flex
                          flex-col
                          items-center">
           <div>
-            <p>{failMessage}</p>
+            
           </div>
-        <Image  src={imageEth} alt="ether" width={100} height={100} />
-        <p>Welcome to BNB Acount Balance Checker</p>
+        <Image  src={imageEth} alt="ether" width={200} height={300} />
+        <p className="font-thin">Welcome to BNB Acount Balance Checker</p>
         </div>
       ):(
         <div>
-          <h6>Verified <span className="tick">&#10004;</span></h6>
-          <p>
+          <h6 className="font-bold">Verified <span className="bg-yellow-300 rounded-full p-1">&#10004;</span></h6>
+          <p className="py-3 text-sm">
             BNB account and balance Checker <br/> find account details 
           </p>
           <div>
-            <button className="bg-blue-100" onClick={() => {}}>BNB acount details</button>
+            <button className="bg-pink-800 rounded-2xl px-4 py-3 my-4" onClick={() => {}}>BNB acount details</button>
           </div>
         </div>
       )}
 
         {!currentAccount && !connect ? (
           <div>
-            <button className="bg-gray-300 text-black" onClick={() => cWallet()} >Connect Wallet</button>
+            <button className="m-3 rounded-lg px-2 py-1 bg-pink-400 text-black" onClick={() => cWallet()} >Connect Wallet</button>
           </div>
         ) : (
-          <div>
-            <h6>Your BNB</h6>
+          <div className="shadow-black shadow-inner text-left bg-gray-600 rounded-xl p-3 h-full">
+            <h6 className="text-2xl pt-3 pb-1 font-bold font-serif text-gray-300">Your BNB</h6>
             <ul>
-              <li>Account</li>
+              <li className="text-gray-200 font-serif font-bold">Account :</li>
               <li>{currentAccount}</li>
-              <li>Balance</li>
+              <li className="text-gray-200 font-serif font-bold">Balance</li>
               <li>{balance} BNB</li>
             </ul>
           </div>
