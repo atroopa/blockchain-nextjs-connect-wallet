@@ -66,6 +66,7 @@ const Home = () => {
 useEffect(() => {
     async function accountChanged() {
       window.ethereum.on('accountsChanged' , async function () {
+        const injectedProvider = await getTrustWalletInjectedProvider();
         const accounts = await injectedProvider.request({
           method: "eth_accounts",
         });
