@@ -2,7 +2,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-First, run the development server:
+First, Click on picture for play video:
 [![Watch the video](https://www.uplooder.net/img/image/23/b5cbbf9087bae1e4f9dc99ccb7d1a0cf/Screenshot-from-2023-05-23-18-24-03.png)](https://github.com/atroopa/blockchain-nextjs-connect-wallet/assets/48874611/63a8cd72-f072-41b9-ba5a-afc69f70153d)
 
 
