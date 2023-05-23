@@ -18,6 +18,9 @@ const Home = () => {
   const INFURA_ID                           = "f67125134e064cf094e2495c49323c68";
   const provider                            = new ethers.providers.JsonRpcProvider(`https://bsc-dataseed.binance.org`);
 
+ 
+
+
   const checkIfWalletConnected =  async () => {
     if (! window.trustwallet) return;
 
@@ -83,17 +86,30 @@ useEffect(() => {
   }, []);
 
   return (
-    <div>
+    <main className="flex items-center justify-center bg-gradient-to-tr from-pink-900 via-pink-600 to-pink-400 h-screen">
+    <div className="bg-gray-700 
+                      rounded-3xl 
+                      shadow-black 
+                      shadow-2xl 
+                      py-10 px-4
+                      text-white
+                      text-center
+                      flex
+                      flex-col
+                      items-center
+                      ">
       {!currentAccount ? "" : <span>PRO</span>}
       <Image src={creator} alt="profile" width={80} height={80}/>
-      <h3>check ether</h3>
+      <h3 className="text-2xl">check ether</h3>
 
       {! currentAccount ? (
-        <div>
+        <div className=" flex
+                         flex-col
+                         items-center">
           <div>
             <p>{failMessage}</p>
           </div>
-        <Image src={imageEth} alt="ether" width={100} height={100} />
+        <Image  src={imageEth} alt="ether" width={100} height={100} />
         <p>Welcome to BNB Acount Balance Checker</p>
         </div>
       ):(
@@ -110,7 +126,7 @@ useEffect(() => {
 
         {!currentAccount && !connect ? (
           <div>
-            <button className="bg-red-100" onClick={() => cWallet()} >Connect Wallet</button>
+            <button className="bg-gray-300 text-black" onClick={() => cWallet()} >Connect Wallet</button>
           </div>
         ) : (
           <div>
@@ -124,6 +140,7 @@ useEffect(() => {
           </div>
         )}
     </div>
+    </main>
   );
 };
 
