@@ -3,7 +3,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 ## Getting Started
 
 First, run the development server:
-[nextjs-trustWallet-etherjs.webm](https://github.com/atroopa/blockchain-nextjs-connect-wallet/assets/48874611/63a8cd72-f072-41b9-ba5a-afc69f70153d)
+[![Watch the video]](https://github.com/atroopa/blockchain-nextjs-connect-wallet/assets/48874611/63a8cd72-f072-41b9-ba5a-afc69f70153d)
 
 
 ```bash
