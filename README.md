@@ -4,6 +4,10 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 First, run the development server:
 
+![Screenshot from 2023-05-23 17-29-25](https://github.com/atroopa/blockchain-nextjs-connect-wallet/assets/48874611/f4f08c90-3ee9-4b6a-9311-5f7fc608d54f)
+
+![Screenshot from 2023-05-23 17-30-06](https://github.com/atroopa/blockchain-nextjs-connect-wallet/assets/48874611/7844c9b9-a849-4845-92c8-a6c0ed21fd37)
+
 ```bash
 npm run dev
 # or
@@ -13,6 +17,8 @@ pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+
 
 You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
 
